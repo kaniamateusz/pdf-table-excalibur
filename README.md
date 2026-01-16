@@ -15,7 +15,16 @@ This README describes how to:
 
 ---
 
-### 1. Install Python 3.8 (side-by-side)
+### 1. Verify if Python 3.8 is installed
+
+Open a **new Command Prompt** and run:
+```
+py -0
+```
+
+If Python 3.8 is installed go to step 3, if not run installation.
+
+### 2. Install Python 3.8 (side-by-side)
 
 Version 3.8.10 is the last Python 3.8 release and is recommended.
 Download **Python 3.8.10 (64-bit)** from the official source:
@@ -34,12 +43,9 @@ This keeps your system default Python (e.g. 3.13) unchanged.
 
 ### 2. Verify installed Python versions
 
-Open a **new Command Prompt** and run:
-```
-py -0
-```
+Verify versions running `py -0`
 
-Expected output:
+Expected example output:
 ```
 -V:3.13 *        Python 3.13 (64-bit)
 -V:3.10          Python 3.10 (64-bit)
@@ -50,7 +56,7 @@ Expected output:
 
 ### 3. Create Python 3.8 virtual environment
 
-From the project directory:
+From the project directory create virtual environment for Python 3.8:
 ```
 py -3.8 -m venv venv_py38
 ```
@@ -64,6 +70,7 @@ Verify:
 ```
 python --version
 ```
+And you should see `Python 3.8.10`
 
 ---
 
@@ -79,8 +86,7 @@ python -m pip install --upgrade pip setuptools wheel
 
 Run with:
 ```
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\scripts\install_windows_py38.ps1
+python -m pip install -r requirements.txt
 ```
 
 ---
@@ -129,6 +135,47 @@ gswin64c -version
 
 ---
 
+### 2. Modify package
+
+There are two needed changes in `project_root\venv_py38\lib\site-packages\camelot\core.py` file:
+
+#### in the line 740:
+
+Remove `encoding` input parameter from the pandas function `to_excel()`
+
+Replace the code:
+```
+table.df.to_excel(writer, sheet_name=sheet_name, encoding="utf-8")
+```
+
+With correct code:
+```
+table.df.to_excel(writer, sheet_name=sheet_name)
+```
+
+#### in the line 741:
+
+Replace pandas `save()` method with `ExcelWriter()`:
+
+In newer pandas (≥ 1.2, and definitely ≥ 1.5 / 2.x): `ExcelWriter.save()` was removed and replaced with `context manager (with ExcelWriter(...) as writer:)`
+
+Replace the code:
+```
+writer = pd.ExcelWriter(filepath)
+for table in self._tables:
+    sheet_name = f"page-{table.page}-table-{table.order}"
+    table.df.to_excel(writer, sheet_name=sheet_name)
+writer.save()
+```
+
+With correct code:
+```
+with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
+    for table in self._tables:
+        sheet_name = f"page-{table.page}-table-{table.order}"
+        table.df.to_excel(writer, sheet_name=sheet_name)
+```
+
 ### 7. Initialize and start Excalibur database
 
 ```
@@ -142,6 +189,10 @@ http://127.0.0.1:5000
 ```
 
 And you can easily upload and extract tables from pdf's to the text format!
+
+### 8. Steps to properly run web excalibur editor
+
+<img width="1312" height="959" alt="Image" src="https://github.com/user-attachments/assets/bbd44ca2-84e8-4797-88f0-e5183ac5bf0f" />
 
 ---
 
@@ -170,49 +221,6 @@ Camelot does **not** search the registry or Program Files.
  gswin64c -version
 ```
 
-### 2. Modify package
 
-If you get the Error:
-```
-File "c:\users\username\git\pdf-table-excalibur\venv_py38\lib\site-packages\camelot\core.py",
-line 752, in export writer.save()
-```
-
-In newer pandas (≥ 1.2, and definitely ≥ 1.5 / 2.x):
-```
-ExcelWriter.save()
-```
-was removed
-
-The correct lifecycle is:
-```
-context manager (with ExcelWriter(...) as writer:)
-```
-or
-```
-explicit writer.close()
-```
-
-File to edit:
-```
-venv_py38\lib\site-packages\camelot\core.py
-```
-
-Replace the block:
-```
-writer = pd.ExcelWriter(filepath)
-for table in self._tables:
-    sheet_name = f"page-{table.page}-table-{table.order}"
-    table.df.to_excel(writer, sheet_name=sheet_name)
-writer.save()
-```
-
-With block:
-```
-with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
-    for table in self._tables:
-        sheet_name = f"page-{table.page}-table-{table.order}"
-        table.df.to_excel(writer, sheet_name=sheet_name)
-```
 
 

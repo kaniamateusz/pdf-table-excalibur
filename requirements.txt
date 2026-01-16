@@ -1,7 +1,7 @@
 amqp==5.3.1
 backports.zoneinfo==0.2.1
 billiard==4.2.4
-camelot-py==0.10.1
+camelot-py==0.8.2
 celery==5.5.3
 cffi==1.17.1
 chardet==5.2.0
