@@ -41,7 +41,7 @@ This keeps your system default Python (e.g. 3.13) unchanged.
 
 ---
 
-### 2. Verify installed Python versions
+### 3. Verify installed Python versions
 
 Verify versions running `py -0`
 
@@ -54,7 +54,7 @@ Expected example output:
 
 ---
 
-### 3. Create Python 3.8 virtual environment
+### 4. Create Python 3.8 virtual environment
 
 From the project directory create virtual environment for Python 3.8:
 ```
@@ -74,7 +74,7 @@ And you should see `Python 3.8.10`
 
 ---
 
-### 4. Upgrade packaging tools inside the venv
+### 5. Upgrade packaging tools inside the venv
 
 ```
 python -m pip install --upgrade pip setuptools wheel
@@ -82,7 +82,7 @@ python -m pip install --upgrade pip setuptools wheel
 
 ---
 
-### 5. Install compatible Python packages
+### 6. Install compatible Python packages
 
 Run with:
 ```
@@ -91,7 +91,7 @@ python -m pip install -r requirements.txt
 
 ---
 
-### 6. Install Ghostscript (Windows)
+### 7. Install Ghostscript (Windows)
 
 Excalibur and Camelot require **Ghostscript** to render PDF pages.  
 Installing the Python package `ghostscript` from PyPI is **not sufficient** — the system-level Ghostscript binary must be installed and available on `PATH`.
@@ -135,7 +135,7 @@ gswin64c -version
 
 ---
 
-### 2. Modify package
+### 8. Modify package
 
 There are two needed changes in `project_root\venv_py38\lib\site-packages\camelot\core.py` file:
 
@@ -176,7 +176,7 @@ with pd.ExcelWriter(filepath, engine="openpyxl") as writer:
         table.df.to_excel(writer, sheet_name=sheet_name)
 ```
 
-### 7. Initialize and start Excalibur database
+### 9. Initialize and start Excalibur database
 
 ```
 excalibur initdb
@@ -190,7 +190,7 @@ http://127.0.0.1:5000
 
 And you can easily upload and extract tables from pdf's to the text format!
 
-### 8. Steps to properly run web excalibur editor
+### 10. Steps to properly run web excalibur editor
 
 <img width="1312" height="959" alt="Image" src="https://github.com/user-attachments/assets/bbd44ca2-84e8-4797-88f0-e5183ac5bf0f" />
 
